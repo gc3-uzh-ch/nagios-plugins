@@ -1,0 +1,20 @@
+# zpool status -v test
+  pool: test
+ state: DEGRADED
+status: One or more devices has experienced an error resulting in data
+        corruption.  Applications may be affected.
+action: Restore the file in question if possible.  Otherwise restore the
+        entire pool from backup.
+   see: http://www.sun.com/msg/ZFS-8000-8A
+ scrub: resilver in progress for 0h4m, 26.44% done, 0h12m to go
+config:
+
+        NAME         STATE     READ WRITE CKSUM
+        test         DEGRADED     0     0  191K
+          replacing  DEGRADED     0     0  191K
+            c5t0d0   FAULTED     26     0     0  too many errors
+            c4t0d0   ONLINE       0     0  382K
+
+errors: Permanent errors have been detected in the following files:
+
+        test/target:<0x1>

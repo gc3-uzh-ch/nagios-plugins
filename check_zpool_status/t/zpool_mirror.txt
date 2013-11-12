@@ -1,0 +1,22 @@
+# zpool status test
+  pool: test
+ state: DEGRADED
+status: One or more devices has been taken offline by the adminstrator.
+        Sufficient replicas exist for the pool to continue functioning in a
+        degraded state.
+action: Online the device using 'zpool online' or replace the device with
+        'zpool replace'.
+ scrub: resilver completed with 0 errors on Tue Jun  6 08:48:41 2006
+config:
+
+        NAME          STATE     READ WRITE CKSUM
+        test          DEGRADED     0     0     0
+          mirror      DEGRADED     0     0     0
+            spare     DEGRADED     0     0     0
+              c0t0d0  OFFLINE      0     0     0
+              c0t2d0  ONLINE       0     0     0
+            c0t1d0    ONLINE       0     0     0
+        spares
+          c0t2d0      INUSE     currently in use
+
+errors: No known data errors

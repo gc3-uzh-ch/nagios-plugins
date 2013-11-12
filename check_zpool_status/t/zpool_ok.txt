@@ -1,0 +1,14 @@
+$ ./zpool status
+  pool: test
+ state: ONLINE
+ scrub: scrub completed with 0 errors on Sat Aug 19 03:45:45 2006
+config:
+
+        NAME            STATE     READ WRITE CKSUM
+        test            ONLINE       0     0     0
+          raidz1        ONLINE       0     0     0
+            /tmp/test1  ONLINE       0     0     0
+            /tmp/test2  ONLINE       0     0     0
+            /tmp/test3  ONLINE       0     0     0
+
+errors: No known data errors
