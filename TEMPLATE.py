@@ -16,10 +16,10 @@ import os
 import sys
 
 # exit statuses recognized by Nagios
-UNKNOWN = -1
 OK = 0
 WARNING = 1
 CRITICAL = 2
+UNKNOWN = 3
 
 # template for reading parameters from commandline
 # a `--help` option is automatically added by `optparse`
