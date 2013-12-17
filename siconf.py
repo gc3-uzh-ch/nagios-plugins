@@ -66,6 +66,8 @@ def split_line(text):
 		s.use = 'generic-service'
 		s.register = '1'
 		s.command = command
+		s.notification_options = 'y'
+		
 		if host[0] == "@":
 			s.hostgroup_name = host[1:]
 		else:
@@ -85,8 +87,8 @@ parser.add_option("-o", "--output", dest="output_filename",
 	Default is under pynag tree in $ICINGA_HOME")
 parser.add_option("-c", "--icinga-conf", dest="icinga_conf", default="/etc/icinga/icinga.cfg",
 	help="Path to icinga configuration file. Default is %default")
-parser.add_option("-p", "--print", action="store_true", dest="stdout",
-	default=False, help="Write Icinga service definitions to standard output.\n")		
+#parser.add_option("-p", "--print", action="store_true", dest="stdout",
+#	default=False, help="Write Icinga service definitions to standard output.\n")		
 
 (options, args) = parser.parse_args()
 
@@ -100,7 +102,9 @@ if not options.input_filename:
 input_filename = options.input_filename
 output_filename = options.output_filename
 icinga_conf = options.icinga_conf
-stdout = options.stdout
+stdout = False
+if not output_filename:
+	stdout = True
 
 # open file
 try:
@@ -120,20 +124,17 @@ except (IOError, exceptions.NameError) as e:
 # parse each line of the configuration file
 for line in input_file:
 	# for each line explode strings on colon delimiter ":"
-	# and push them in a array (the host/group_host check, later)
-	# service[N] = string_list ?
-	# service.push( explode(line,":") ) ?
 	split_line(line)
 
-
 # once you have an array of services, iterate over it 
+print output_filename
 for idx, service in enumerate(service_array):
 	if stdout:
 		print service
 	else:
 		# it will write by default to /etc/icinga/pynag (it creates dir if not existing)
 #		service.set_filename(output_filename)
-#		service.save()
+		service.save()
 		pass
 		
 sys.exit(0)
