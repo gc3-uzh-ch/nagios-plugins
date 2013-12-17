@@ -35,7 +35,6 @@ def split_line(text):
 	explode_list=text.strip().split(':')
 	# try to identify each field
 	# raise an exception if, on each line, we don't have 5 fields
-	print text
 	try:		
 		# get the frequency
 		frequency=explode_list[1]
@@ -55,15 +54,13 @@ def split_line(text):
 		sys.exit(1)		
 	# target is in comma separated list, explode it
 	host_list=explode_list[0].strip().split(',')
+
 	# icinga conf file
 	Model.cfg_file = icinga_conf
 	# for each host or host_group in this configuration line	
 	for idx, host in enumerate(host_list):
 		# create a new service object
 		s = Model.Service()
-		# write configuration to a test directory
-		# default to /etc/icinga/pynag (it creates dir if not existing)
-#		s.set_filename('/root/deggioTest/test_service_definition')
 		# Set some attributes for the service
 		s.service_description = service
 		s.use = 'generic-service'
@@ -81,39 +78,40 @@ def split_line(text):
 # template for reading parameters from commandline
 # a `--help` option is automatically added by `optparse`
 parser = OptionParser("Usage: %prog -i conf_file [options]")
-parser.add_option("-i", "--input-file", dest="input_file",
+parser.add_option("-i", "--input-file", dest="input_filename",
 	default='', help="File where you can specify Icinga service definitions.\n")
-parser.add_option("-o", "--output", dest="output_file",
+parser.add_option("-o", "--output", dest="output_filename",
 	default='', help="Write Icinga service definitions on this file.\n \
-					  Default is under pynag tree in $ICINGA_HOME")
-parser.add_option("-p", "--print", action="store_true", dest="stdout",
-	default=False, help="Write Icinga service definitions to standard output.\n")	
+	Default is under pynag tree in $ICINGA_HOME")
 parser.add_option("-c", "--icinga-conf", dest="icinga_conf", default="/etc/icinga/icinga.cfg",
 	help="Path to icinga configuration file. Default is %default")
+parser.add_option("-p", "--print", action="store_true", dest="stdout",
+	default=False, help="Write Icinga service definitions to standard output.\n")		
 
 (options, args) = parser.parse_args()
 
 # check usage: accept one argument (name of the table file)
-if not options.input_file:
+if not options.input_filename:
 	parser.print_help()
 	parser.error("Please specify a configuration file.")
 #	sys.stderr.write("Usage:  %s [path to configuration file] \n" % (sys.argv[0]))
 	sys.exit(2)
 
-input_file = options.input_file
-output_file = options.output_file
+input_filename = options.input_filename
+output_filename = options.output_filename
 icinga_conf = options.icinga_conf
+stdout = options.stdout
 
 # open file
 try:
-	input_file = open(input_file,'r')
+	input_file = open(input_filename,'r')
 except (IOError, exceptions.NameError) as e:
 	# print file path here
 	print "I/O error({1}) on {0}: {2}".format(e.filename, e.errno, e.strerror) 
 	sys.exit(1)
 	
 try:
-	icinga_conf = open(icinga_conf,'r')
+	open(icinga_conf,'r')
 except (IOError, exceptions.NameError) as e:
 	# print file path here
 	print "I/O error({1}) on {0}: {2}".format(e.filename, e.errno, e.strerror) 
@@ -121,7 +119,6 @@ except (IOError, exceptions.NameError) as e:
 
 # parse each line of the configuration file
 for line in input_file:
-	print line
 	# for each line explode strings on colon delimiter ":"
 	# and push them in a array (the host/group_host check, later)
 	# service[N] = string_list ?
@@ -133,6 +130,11 @@ for line in input_file:
 for idx, service in enumerate(service_array):
 	if stdout:
 		print service
-
+	else:
+		# it will write by default to /etc/icinga/pynag (it creates dir if not existing)
+#		service.set_filename(output_filename)
+#		service.save()
+		pass
+		
 sys.exit(0)
 
