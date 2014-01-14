@@ -26,7 +26,6 @@ from pynag import Model
 service_array = []
 
 def split_line(text):
-
 	# skip the comment lines
 	if text[0] == "#":
 		return	
@@ -49,8 +48,8 @@ def split_line(text):
 		sys.stderr.write(text)
 		sys.exit(1)
 	# we accept empty values only for option field
-	if command == "" or service == "" or frequency == "":
-		sys.stderr.write("An empty field is now allowed on command, service, frequency.\n")
+	if command == "" or service == "":
+		sys.stderr.write("An empty field is now allowed on command, service.\n")
 		sys.exit(1)		
 	# target is in comma separated list, explode it
 	host_list=explode_list[0].strip().split(',')
@@ -66,25 +65,26 @@ def split_line(text):
 		s.use = 'generic-service'
 		s.register = '1'
 		s.command = command
-		s.notification_options = 'y'
-		
+#		s.notification_options = 'y'
 		if host[0] == "@":
 			s.hostgroup_name = host[1:]
 		else:
 			s.host_name = host
-#		s.save()
-		# put it into an array (UNUSED)
+		if options == "passive":
+			s.passive_checks_enabled = '1'
+		# put it into an array
 		service_array.append(s)
 
-# start
+# start main
 # template for reading parameters from commandline
 # a `--help` option is automatically added by `optparse`
 parser = OptionParser("Usage: %prog -i conf_file [options]")
 parser.add_option("-i", "--input-file", dest="input_filename",
-	default='', help="File where you can specify Icinga service definitions.\n")
+	default='', help="Here you specify Icinga service definitions with the following short format \n \
+	target:frequency:options:command:description")
 parser.add_option("-o", "--output", dest="output_filename",
-	default='', help="Write Icinga service definitions on this file.\n \
-	Default is under pynag tree in $ICINGA_HOME")
+	default='', help="Write Icinga service definitions to this file.\n \
+	Default is pynag dir in $ICINGA_HOME/pynag")
 parser.add_option("-c", "--icinga-conf", dest="icinga_conf", default="/etc/icinga/icinga.cfg",
 	help="Path to icinga configuration file. Default is %default")
 #parser.add_option("-p", "--print", action="store_true", dest="stdout",
@@ -95,7 +95,7 @@ parser.add_option("-c", "--icinga-conf", dest="icinga_conf", default="/etc/icing
 # check usage: accept one argument (name of the table file)
 if not options.input_filename:
 	parser.print_help()
-	parser.error("Please specify a configuration file.")
+#	parser.error("Please specify a configuration file.")
 #	sys.stderr.write("Usage:  %s [path to configuration file] \n" % (sys.argv[0]))
 	sys.exit(2)
 
@@ -105,6 +105,8 @@ icinga_conf = options.icinga_conf
 stdout = False
 if not output_filename:
 	stdout = True
+else:
+	print "Writing service definitions to {0}".format(output_filename)
 
 # open file
 try:
@@ -127,15 +129,11 @@ for line in input_file:
 	split_line(line)
 
 # once you have an array of services, iterate over it 
-print output_filename
 for idx, service in enumerate(service_array):
 	if stdout:
 		print service
 	else:
 		# it will write by default to /etc/icinga/pynag (it creates dir if not existing)
-#		service.set_filename(output_filename)
-		service.save()
-		pass
-		
+		service.set_filename(output_filename)
+		service.save()		
 sys.exit(0)
-
