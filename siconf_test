@@ -1,4 +1,5 @@
 # icinga siconf configuration file
 # target:frequency:option:command:service_description
 host1,host3,host4:20m::dummy_check:a dummy check
-@hostgroup1:4h:passive=true:dummy_check: a check test
+@hostgroup1:4h:passive:dummy_check: a check test
+host4:::nice_check:nice_description

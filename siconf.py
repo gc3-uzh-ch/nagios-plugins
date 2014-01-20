@@ -25,15 +25,18 @@ from pynag import Model
 # to store the service definitions
 service_array = []
 
+'''
+function to parse input file, where a line is as follows
+target:frequency:option:command:service_description
+'''
 def split_line(text):
 	# skip the comment lines
 	if text[0] == "#":
 		return	
-	# a conf line is in the form target:frequency:option:command:service_description
 	# explode it		
 	explode_list=text.strip().split(':')
 	# try to identify each field
-	# raise an exception if, on each line, we don't have 5 fields
+	# raise an exception if, on each line, we don't have at least 5 fields
 	try:		
 		# get the frequency
 		frequency=explode_list[1]
@@ -54,7 +57,7 @@ def split_line(text):
 	# target is in comma separated list, explode it
 	host_list=explode_list[0].strip().split(',')
 
-	# icinga conf file
+	# set icinga configuration file
 	Model.cfg_file = icinga_conf
 	# for each host or host_group in this configuration line	
 	for idx, host in enumerate(host_list):
@@ -63,8 +66,10 @@ def split_line(text):
 		# Set some attributes for the service
 		s.service_description = service
 		s.use = 'generic-service'
-		s.register = '1'
-		s.command = command
+#		s.register = 'register'
+		if frequency != '':
+			s.check_interval = frequency
+		s.check_command = command
 #		s.notification_options = 'y'
 		if host[0] == "@":
 			s.hostgroup_name = host[1:]
@@ -75,12 +80,14 @@ def split_line(text):
 		# put it into an array
 		service_array.append(s)
 
-# start main
-# template for reading parameters from commandline
-# a `--help` option is automatically added by `optparse`
-parser = OptionParser("Usage: %prog -i conf_file [options]")
-parser.add_option("-i", "--input-file", dest="input_filename",
-	default='', help="Here you specify Icinga service definitions with the following short format \n \
+'''
+start main
+configure optionparser
+read arguments from command line
+'''
+parser = OptionParser("Usage: %prog -i input_file [options]")
+parser.add_option("-i", "--input", dest="input_filename",
+	default='', help="Path to Icinga service definition short-format file. Example syntax: \n \
 	target:frequency:options:command:description")
 parser.add_option("-o", "--output", dest="output_filename",
 	default='', help="Write Icinga service definitions to this file.\n \
@@ -108,14 +115,15 @@ if not output_filename:
 else:
 	print "Writing service definitions to {0}".format(output_filename)
 
-# open file
+# open input file, exit if IO error
 try:
 	input_file = open(input_filename,'r')
 except (IOError, exceptions.NameError) as e:
 	# print file path here
 	print "I/O error({1}) on {0}: {2}".format(e.filename, e.errno, e.strerror) 
 	sys.exit(1)
-	
+
+# open icinga configuration file, exit if IO error	
 try:
 	open(icinga_conf,'r')
 except (IOError, exceptions.NameError) as e:
