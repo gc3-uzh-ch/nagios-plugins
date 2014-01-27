@@ -66,8 +66,10 @@ def split_line(text):
 		# Set some attributes for the service
 		s.service_description = service
 		s.use = 'generic-service'
-		s.register = '1'
-		s.command = command
+#		s.register = 'register'
+		if frequency != '':
+			s.check_interval = frequency
+		s.check_command = command
 #		s.notification_options = 'y'
 		if host[0] == "@":
 			s.hostgroup_name = host[1:]
