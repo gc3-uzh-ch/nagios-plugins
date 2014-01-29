@@ -34,7 +34,8 @@ def split_line(text):
 	if text[0] == "#":
 		return	
 	# explode it		
-	explode_list=text.strip().split(':')
+	explode_list=text.strip().split('|')
+#	print len(explode_list)
 	# try to identify each field
 	# raise an exception if, on each line, we don't have at least 5 fields
 	try:		
@@ -88,7 +89,8 @@ read arguments from command line
 parser = OptionParser("Usage: %prog -i input_file [options]")
 parser.add_option("-i", "--input", dest="input_filename",
 	default='', help="Path to Icinga service definition short-format file. Example syntax: \n \
-	target:frequency:options:command:description")
+	target:frequency:options:command:description \n \
+	Use \"-\" to read from STDIN")
 parser.add_option("-o", "--output", dest="output_filename",
 	default='', help="Write Icinga service definitions to this file.\n \
 	Default is pynag dir in $ICINGA_HOME/pynag")
@@ -116,12 +118,15 @@ else:
 	print "Writing service definitions to {0}".format(output_filename)
 
 # open input file, exit if IO error
-try:
-	input_file = open(input_filename,'r')
-except (IOError, exceptions.NameError) as e:
-	# print file path here
-	print "I/O error({1}) on {0}: {2}".format(e.filename, e.errno, e.strerror) 
-	sys.exit(1)
+if input_filename == '-':
+	input_file = sys.stdin
+else:
+	try:
+		input_file = open(input_filename,'r')
+	except (IOError, exceptions.NameError) as e:
+		# print file path here
+		print "I/O error({1}) on {0}: {2}".format(e.filename, e.errno, e.strerror) 
+		sys.exit(1)
 
 # open icinga configuration file, exit if IO error	
 try:

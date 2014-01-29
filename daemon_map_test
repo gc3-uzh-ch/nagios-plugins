@@ -1,0 +1,17 @@
+# DEFINE SERVICES SECTION
+# define service with the following syntax
+# daemon allowed_instances [ip_bind:proto] [logfile, mtime]
+# e.g. to define a service "cfengine" 
+# 	with daemon "/var/cfengine/bin/cf-serverd"
+#	allowed to run 1 instance
+#	bound to 0.0.0.0
+#	listening to 5308, TCP protocol
+cfengine=/var/cfengine/bin/cf-serverd 1 0.0.0.0:TCP5308
+tftp=/usr/sbin/atftpd 1 0.0.0.0:UDP69
+dhcp=/usr/sbin/dhcpd 1 0.0.0.0:UDP67
+apache=/usr/sbin/apache2 1:100 0.0.0.0:TCP80 /var/log/apache2/access.log 1000
+
+# host services
+cfengine|gw1|gw2 cfengine
+pxeconf|gw1|gw2 tftp,dhcp
+login1 apache

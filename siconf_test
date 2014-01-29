@@ -1,5 +1,6 @@
 # icinga siconf configuration file
-# target:frequency:option:command:service_description
-host1,host3,host4:20m::dummy_check:a dummy check
-@hostgroup1:4h:passive:dummy_check: a check test
-host4:::nice_check:nice_description
+# target|frequency|option|command|service_description
+host1,host3,host4|20m||dummy check|a dummy check
+@hostgroup1|4h|passive|dummy_check| a check test
+host4|||nice_check|nice_description
+cloud-storage1|||/usr/lib/nagios/plugins/check_daemon.pl /usr/sbin/apache2 -p 80/TCP|description
