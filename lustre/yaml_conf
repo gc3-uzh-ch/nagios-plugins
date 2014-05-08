@@ -1,0 +1,72 @@
+# to authenticate on the controllers' management
+authentication:
+ md5_hex_hash: 539e12f63b693a9970a97b885e857f8b
+
+# define some hosts
+hosts:
+ # this is not a name on the dns or /etc/hosts
+ sclustre-ctrl-oss1-oss2:
+  # controller A and B, with IPs
+  - sclustre-ctrl-oss1-oss2-a.es: localhost:9999
+  - sclustre-ctrl-oss1-oss2-b.es: localhost:9999
+#  - sclustre-ctrl-oss1-oss2-a.es: 10.128.93.16
+#  - sclustre-ctrl-oss1-oss2-b.es: 10.128.93.17
+# sclustre-ctrl-oss3-oss4:
+#  - sclustre-ctrl-oss3-oss4-a.es: 10.128.93.20
+#  - sclustre-ctrl-oss3-oss4-b.es: 10.128.93.21 
+# sclustre-ctrl-oss5-oss6:
+#  - sclustre-ctrl-oss5-oss6-a.es: 10.128.93.24
+#  - sclustre-ctrl-oss5-oss6-b.es: 10.128.93.25 
+# sclustre-ctrl-oss7-oss8:
+#  - sclustre-ctrl-oss7-oss8-a.es: 10.128.93.28
+#  - sclustre-ctrl-oss7-oss8-b.es: 10.128.93.29 
+# sclustre-ctrl-mds1-mds2:
+#  - sclustre-ctrl-mds1-mds2-a.es: 10.128.93.12
+#  - sclustre-ctrl-mds1-mds2-b.es: 10.128.93.13  
+
+# on those hosts, query the status of the following objects
+objects:
+ controllers:
+ # on this object, look for this attribute
+  durable-id:
+   # this attribute could have the following texts
+   - controller_a
+   - controller_b    
+
+ 
+ volumes:
+ # on this object, look for this attribute
+  volume-name:
+  # this attribute may have the following texts
+   - ost01
+   - ost02
+   - ost03
+   - ost04       
+   - ost05
+   - ost06
+   - ost07
+   - ost08       
+   - ost09
+   - ost10
+   - ost11
+   - ost12       
+   - ost13
+   - ost14
+   - ost15
+   - ost16       
+   - ost17
+   - ost18
+   - ost19
+   - ost20       
+   - ost21
+   - ost22
+   - ost23
+   - ost24       
+   - ost25
+   - ost26
+   - ost27
+   - ost28       
+   - ost29
+   - ost30
+   - ost31
+   - ost32                         
