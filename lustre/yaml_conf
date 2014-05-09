@@ -11,8 +11,18 @@ objects:
  # on this object, look for this attribute
   durable-id:
    # this attribute could have the following texts
-   - controller_a
-   - controller_b    
+#   - controller_a
+#   - controller_b
+#   - expport_out1_a0
+#   - expport_out1_b0
+#   - mgmtport_a
+#   - mgmtport_b
+#   - hostport_A0   
+#   - hostport_A2   
+#   - hostport_B0   
+   - hostport_B2
+   - Ctlr B CF
+   - Ctlr A CF
 
  
  volumes:

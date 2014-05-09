@@ -41,8 +41,8 @@ class Manage_HTTP_Connection:
 		md5_hex_hash = doc['authentication']['md5_hex_hash']	
 		### LOGIN: run the HTTP GET and get response in xml
 		try:
-			self.r = requests.get('http://'+ctrl_ip+'/api/login/'+md5_hex_hash, stream=True, timeout=2)			
-		except requests.ConnectionError:
+			self.r = requests.get('http://'+ctrl_ip+'/api/login/'+md5_hex_hash, stream=True, timeout=5)			
+		except (requests.ConnectionError, requests.Timeout):
 			return None
 		## get the document root and the session key
 		XML_response = etree.parse(self.r.raw)
@@ -55,10 +55,12 @@ class Manage_HTTP_Connection:
 	def http_get(self, ip, obj):
 		# get a session
 		session_key = self.__authenticate_and_get_session(ip)
+		if not session_key:
+			return None
 		# return the requests
 		return requests.get('http://'+ip+'/api/show/'+obj, 
 			headers={"sessionKey":session_key, "dataType":"api"}, 
-			stream=True, timeout=2)
+			stream=True, timeout=5)
 	
 
 	
@@ -191,9 +193,8 @@ for obj in doc['objects']:
 			# iterate over different way to reach the same storage array (break loop if success)
 			for ip in ctrl_name:
 				component = Component(obj, check_dict, host)
-				try:
-					r = http_connection.http_get(ctrl_name[ip], obj)
-				except requests.ConnectionError as e:
+				r = http_connection.http_get(ctrl_name[ip], obj)
+				if not r:
 					component.add_custom_status("Unable to contact " + ip + " (" + ctrl_name[ip] + ")")
 					exit_stm.add_component_status(component)			
 					continue
