@@ -66,7 +66,12 @@ is_absolute_path () {
 short_opts='hm:'
 long_opts='message:,help'
 
-if [ "x$(getopt -T)" != 'x--' ]; then
+# test which `getopt` version is available:
+# - GNU `getopt` will generate no output and exit with status 4
+# - POSIX `getopt` will output `--` and exit with status 0
+getopt -T > /dev/null
+rc=$?
+if [ "$rc" -eq 4 ]; then
     # GNU getopt
     args=$(getopt --name "$me" --shell sh -l "$long_opts" -o "$short_opts" -- "$@")
     if [ $? -ne 0 ]; then
