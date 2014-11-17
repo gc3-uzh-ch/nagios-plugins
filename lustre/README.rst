@@ -1,9 +1,8 @@
-How to use check_controller.py
-------------------------------
+How to use check_dothill_ctrl.py
+-------------------------------
 
 The script queries the storage arrays management via http, and parse the XML response to identify unhealthy components.
-Configuration is read from file. Look at yaml_conf file in this directory for an example on how to build a configuration file.
-
+Configuration is read from file. 
 
 How XML response is made
 ------------------------
