@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 
-our $VERSION = '1.2';
+our $VERSION = '1.2.1';
 
 =pod
 
@@ -57,6 +57,7 @@ Riccardo Murri, riccardo.murri@gmail.com
 =head1 COPYRIGHT AND LICENCE
 
 Copyright (c) 2008, 2009 ETH Zurich / L<CSCS | http://cscs.ch>.
+Copyright (c) 2015 L<S3IT | http://www.s3it.uzh.ch>, University of Zurich.
 
 Released under the GNU Public License.
 
@@ -133,6 +134,6 @@ my $lastrun = strftime('%H:%M on %A, %B %d, %Y', localtime($st->mtime));
 
 exit_to_nagios ('CRITICAL', "cfengine was last run more than $critical minutes ago, at " . $lastrun)
     if ($delta > $critical);
-exit_to_nagios ('WARNING', "cfengine was last run more than $critical minutes ago, at " . $lastrun)
+exit_to_nagios ('WARNING', "cfengine was last run more than $warning minutes ago, at " . $lastrun)
     if ($delta > $warning);
 exit_to_nagios ('OK', "cfengine was last run at " . $lastrun)
